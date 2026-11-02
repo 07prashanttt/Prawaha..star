@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d16">
+  <meta name="description" content="Prawaha Star — create, watch and share short videos.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <title>Prawaha Star</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <section id="splash" class="splash">
+    <div class="logo-mark">✦</div>
+    <h1>Prawaha <span>Star</span></h1>
+    <p>BUILD BY PRASHANT YADAV</p>
+    <small>Your creativity. Your world.</small>
+  </section>
+
+  <main id="auth" class="auth hidden">
+    <div class="auth-brand"><span class="logo-mark small">✦</span><div><b>Prawaha Star</b><small>Welcome to your creative flow</small></div></div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="tab active" data-auth-tab="email">Email</button>
+        <button class="tab" data-auth-tab="phone">Mobile OTP</button>
+      </div>
+      <section id="email-panel">
+        <label>Email address<input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" placeholder="At least 8 characters"></label>
+        <div class="two-buttons">
+          <button id="email-signup" class="primary">Create account</button>
+          <button id="email-login" class="secondary">Log in</button>
+        </div>
+        <button id="forgot-password" class="text-button">Forgot password?</button>
+      </section>
+      <section id="phone-panel" class="hidden">
+        <label>Phone number<input id="phone" type="tel" autocomplete="tel" placeholder="+97798XXXXXXXX"></label>
+        <button id="send-otp" class="primary full">Send OTP</button>
+        <label>Verification code<input id="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter SMS code"></label>
+        <button id="verify-otp" class="secondary full">Verify and continue</button>
+        <small class="hint">Phone OTP works after you configure an SMS provider in Supabase.</small>
+      </section>
+      <div class="or"><span></span>OR<span></span></div>
+      <button id="google-login" class="google full"><b>G</b> Continue with Google</button>
+      <p id="auth-message" class="message" role="status"></p>
+      <p class="legal">By continuing, you agree to follow community rules. Do not post private information or content you do not have permission to share.</p>
+    </div>
+    <p class="credit">BUILD BY PRASHANT YADAV</p>
+  </main>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="wordmark">✦ Prawaha <span>Star</span></div>
+      <div class="top-actions">
+        <button id="search-open" class="round" aria-label="Search">⌕</button>
+        <button id="profile-open" class="round" aria-label="Profile">◎</button>
+      </div>
+    </header>
+
+    <section id="feed-page" class="page">
+      <nav class="feed-tabs"><button class="feed-tab active" data-feed="for-you">For You</button><button class="feed-tab" data-feed="following">Following</button></nav>
+      <div id="feed" class="feed"><div class="loading">Loading videos…</div></div>
+    </section>
+
+    <section id="search-page" class="page hidden">
+      <div class="page-heading"><h2>Discover</h2></div>
+      <input id="search-input" class="search-input" placeholder="Search creators or captions">
+      <div id="search-results"></div>
+    </section>
+
+    <section id="upload-page" class="page hidden">
+      <div class="page-heading"><h2>Upload video</h2><p>Share something you created or have permission to post.</p></div>
+      <form id="upload-form" class="panel">
+        <label>Choose video<input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
+        <label>Caption<input id="video-caption" maxlength="180" placeholder="Write a caption…" required></label>
+        <label class="checkline"><input id="confirm-rights" type="checkbox" required> I own this video or have permission to share it.</label>
+        <button class="primary full" type="submit">Upload video</button>
+        <p id="upload-message" class="message"></p>
+        <small class="hint">Large videos may take time and use mobile data. Upload limits are configured in Supabase.</small>
+      </form>
+    </section>
+
+    <section id="profile-page" class="page hidden">
+      <div class="page-heading"><h2>Your profile</h2></div>
+      <div class="panel profile-panel">
+        <div id="avatar" class="avatar">★</div>
+        <h2 id="profile-name">Creator</h2>
+        <p id="profile-email" class="muted"></p>
+        <label>Display name<input id="display-name" maxlength="30" placeholder="Your creator name"></label>
+        <button id="save-profile" class="secondary full">Save profile</button>
+        <div class="stats"><div><b id="my-video-count">0</b><small>Videos</small></div><div><b id="my-followers">0</b><small>Followers</small></div><div><b id="my-following">0</b><small>Following</small></div></div>
+        <button id="logout" class="danger full">Log out</button>
+      </div>
+      <div class="page-heading"><h3>Your videos</h3></div>
+      <div id="my-videos" class="my-videos"></div>
+    </section>
+
+    <section id="about-page" class="page hidden">
+      <div class="page-heading"><h2>About Prawaha Star</h2></div>
+      <div class="panel">
+        <h2>Prawaha Star</h2><p>A place to create and enjoy short videos.</p>
+        <p><b>Founder:</b> Prashant Yadav</p>
+        <p><b>Build:</b> BUILD BY PRASHANT YADAV</p>
+        <p class="muted">Support: use the Contact Us form below. A public phone number is intentionally not displayed.</p>
+        <form id="contact-form">
+          <label>Subject<input id="contact-subject" maxlength="100" required></label>
+          <label>Message<textarea id="contact-body" maxlength="1000" rows="4" required></textarea></label>
+          <button class="secondary full">Send message</button>
+          <p id="contact-message" class="message"></p>
+        </form>
+      </div>
+      <div class="panel"><h3>Community safety</h3><p>Post only content you have rights to share. Report content that is abusive, unsafe, or violates someone’s privacy. Do not share your address, phone number, passwords, or school details publicly.</p></div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-page="feed-page"><span>⌂</span><small>Home</small></button>
+      <button class="nav-btn" data-page="search-page"><span>⌕</span><small>Discover</small></button>
+      <button class="nav-btn upload-nav" data-page="upload-page"><span>＋</span><small>Upload</small></button>
+      <button class="nav-btn" data-page="about-page"><span>ⓘ</span><small>About</small></button>
+      <button class="nav-btn" data-page="profile-page"><span>◎</span><small>Profile</small></button>
+    </nav>
+  </div>
+
+  <dialog id="comments-dialog" class="dialog">
+    <div class="dialog-head"><b>Comments</b><button id="comments-close" class="round">×</button></div>
+    <div id="comments-list" class="comments-list"></div>
+    <form id="comment-form" class="comment-form"><input id="comment-text" maxlength="500" placeholder="Add a respectful comment…" required><button class="primary">Send</button></form>
+  </dialog>
+  <dialog id="report-dialog" class="dialog">
+    <div class="dialog-head"><b>Report video</b><button id="report-close" class="round">×</button></div>
+    <form id="report-form" class="panel">
+      <label>Reason<select id="report-reason"><option>Harassment or bullying</option><option>Privacy concern</option><option>Violence or dangerous content</option><option>Copyright concern</option><option>Spam or misleading</option><option>Other</option></select></label>
+      <label>Details<textarea id="report-details" maxlength="500" rows="3"></textarea></label>
+      <button class="danger full">Submit report</button>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <footer class="tiny-credit">BUILD BY PRASHANT YADAV</footer>
+</body>
+</html>
